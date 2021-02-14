@@ -17,9 +17,16 @@ def scanMe():
 					print("Port {} is OPEN".format(port))
 				elif proto == "UDP" or proto == "udp":
 					timeout = 10
-					udp_scan_resp = sr1(IP(dst=target)/UDP(dport=port),timeout=timeout)
-					if udp_scan_resp.haslayer(UDP):
-						print("Port {} is OPEN  ".format(port))
+					pkt = sr1(IP(dst=target)/UDP(dport=port),timeout=timeout)
+					if pkt == None:
+						print("Port {} is Open / Filtered".format(port))
+					else:
+						if pkt.haslayer(ICMP):
+							print("Port {} is Closed".format(port))
+						elif pkt.haslayer(UDP):
+							print("Port {} is Open".format(port))
+						else:
+							print("Unknown response...")
 				else:
 					print("You did not specify either TCP or UDP...")
 				continue
