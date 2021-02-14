@@ -1,4 +1,5 @@
 import socket
+from scapy.all import *
 
 def scanMe():
 	while True:
@@ -15,10 +16,10 @@ def scanMe():
 					result = sock.connect((target,port))
 					print("Port {} is OPEN".format(port))
 				elif proto == "UDP" or proto == "udp":
-					sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-					result = sock.connect_ex((target,port))
-					if result == 0:
-						print("Port {} is OPEN".format(port))
+					timeout = 10
+					udp_scan_resp = sr1(IP(dst=target)/UDP(dport=port),timeout=timeout)
+					if udp_scan_resp.haslayer(UDP):
+						print("Port {} is OPEN  ".format(port))
 				else:
 					print("You did not specify either TCP or UDP...")
 				continue
