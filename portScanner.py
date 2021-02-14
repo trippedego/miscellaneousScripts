@@ -16,8 +16,9 @@ def scanMe():
 					print("Port {} is OPEN".format(port))
 				elif proto == "UDP" or proto == "udp":
 					sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-					result = sock.connect((target,port))
-					print("Port {} is OPEN".format(port))
+					result = sock.connect_ex((target,port))
+					if result == 0:
+						print("Port {} is OPEN".format(port))
 				else:
 					print("You did not specify either TCP or UDP...")
 				continue
