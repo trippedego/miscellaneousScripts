@@ -17,8 +17,8 @@ def scanMe():
 					print("Port {} is OPEN".format(port))
 				elif proto == "UDP" or proto == "udp":
 					timeout = 10
-					pkt = sr1(IP(dst=target)/UDP(sport=43644, dport=port)/Raw(load='test'),timeout=2, verbose=0)
-					
+					ans, unans = sr(IP(dst=target)/UDP(sport=43644, dport=port)/Raw(load='test'),iface="Intel(R) 82574L Gigabit Network Connection",timeout=2, verbose=0)
+					pkt == None
 					if pkt == None:
 						print("Port {} is Open / Filtered".format(port))
 					else:
