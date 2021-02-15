@@ -1,7 +1,7 @@
 import socket
 from scapy.all import *
 
-def scanMe():
+def scanner():
 	while True:
 		target = str(input("Enter the target IP (or enter nothing to exit program)... "))
 		if not target:
